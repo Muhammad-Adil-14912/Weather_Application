@@ -15,6 +15,7 @@ const forecastContainer = document.getElementById("forecast-cards");
 // Fetch Current Weather
 async function fetchWeather(city) {
   try {
+    if (!API_KEY) throw new Error("Weather API key is missing. Copy config.example.js to config.js and add your key.");
     const res = await fetch(`${BASE_URL}weather?q=${encodeURIComponent(city)}&units=metric&appid=${API_KEY}`);
     if (!res.ok) throw new Error(res.status === 404 ? "City not found" : `Weather request failed (${res.status})`);
     const data = await res.json();
@@ -27,6 +28,7 @@ async function fetchWeather(city) {
 // Fetch Forecast
 async function fetchForecast(city) {
   try {
+    if (!API_KEY) throw new Error("Weather API key is missing. Copy config.example.js to config.js and add your key.");
     const res = await fetch(`${BASE_URL}forecast?q=${encodeURIComponent(city)}&units=metric&appid=${API_KEY}`);
     if (!res.ok) throw new Error(res.status === 404 ? "City not found" : `Forecast request failed (${res.status})`);
     const data = await res.json();
