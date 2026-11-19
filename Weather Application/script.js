@@ -1,4 +1,4 @@
-const API_KEY = "42ee71db28f92ccafd3559fab2cb5506";
+const API_KEY = window.OPENWEATHER_API_KEY || "";
 const BASE_URL = "https://api.openweathermap.org/data/2.5/";
 
 const searchForm = document.getElementById("search-form");
@@ -15,8 +15,9 @@ const forecastContainer = document.getElementById("forecast-cards");
 // Fetch Current Weather
 async function fetchWeather(city) {
   try {
-    const res = await fetch(`${BASE_URL}weather?q=${city}&units=metric&appid=${API_KEY}`);
-    if (!res.ok) throw new Error("City not found");
+    if (!API_KEY) throw new Error("Weather API key is missing. Copy config.example.js to config.js and add your key.");
+    const res = await fetch(`${BASE_URL}weather?q=${encodeURIComponent(city)}&units=metric&appid=${API_KEY}`);
+    if (!res.ok) throw new Error(res.status === 404 ? "City not found" : `Weather request failed (${res.status})`);
     const data = await res.json();
     displayCurrentWeather(data);
   } catch (err) {
@@ -27,12 +28,13 @@ async function fetchWeather(city) {
 // Fetch Forecast
 async function fetchForecast(city) {
   try {
-    const res = await fetch(`${BASE_URL}forecast?q=${city}&units=metric&appid=${API_KEY}`);
-    if (!res.ok) throw new Error("Forecast not available");
+    if (!API_KEY) throw new Error("Weather API key is missing. Copy config.example.js to config.js and add your key.");
+    const res = await fetch(`${BASE_URL}forecast?q=${encodeURIComponent(city)}&units=metric&appid=${API_KEY}`);
+    if (!res.ok) throw new Error(res.status === 404 ? "City not found" : `Forecast request failed (${res.status})`);
     const data = await res.json();
     displayForecast(data);
   } catch (err) {
-    console.log(err.message);
+    console.error(err.message);
   }
 }
 
